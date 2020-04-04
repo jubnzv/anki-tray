@@ -20,8 +20,20 @@ class TrayIconManager(QSystemTrayIcon):
         self._connect_slots()
         self._other_variables()
         self.close_from_x = True
-        self.show_signal.connect(self._show_window_all)
+        #  self.show_signal.connect(self._show_window_all)
+        self.show_signal.connect(self.capture_signal_handler)
         self._init_sock()
+
+    def capture_signal_handler(self):
+        #  if not self.is_mw_visible:
+            #  self._show_window_all()
+        if self.is_mw_visible:
+            self._hide_window_all()
+            try:
+                self._show_window_all()
+            except:
+                pass
+        res = aqt.dialogs.open("AddCards", mw)
 
     def __del__(self):
         self.running = False
