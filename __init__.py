@@ -2,7 +2,6 @@ import os
 import socket
 import threading
 import time
-import sys
 
 from anki.hooks import addHook
 from aqt.qt import *
@@ -10,7 +9,6 @@ from aqt import *
 
 
 class TrayIconManager(QSystemTrayIcon):
-
     sock_path = '/tmp/anki_tray.sock'
     show_signal = pyqtSignal()
 
@@ -26,7 +24,7 @@ class TrayIconManager(QSystemTrayIcon):
 
     def capture_signal_handler(self):
         #  if not self.is_mw_visible:
-            #  self._show_window_all()
+        #  self._show_window_all()
         if self.is_mw_visible:
             self._hide_window_all()
             try:
@@ -54,7 +52,7 @@ class TrayIconManager(QSystemTrayIcon):
         self.sock.bind(self.sock_path)
         self.sock.listen(1)
         self.running = True
-        self.thread = threading.Thread(target = self.listen, args=[]).start()
+        self.thread = threading.Thread(target=self.listen, args=[]).start()
 
     def listen(self):
         while self.running:
@@ -71,7 +69,8 @@ class TrayIconManager(QSystemTrayIcon):
 
     def _setup_icon(self):
         anki_logo = QIcon()
-        anki_logo.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Normal, QIcon.Off)
+        anki_logo.addPixmap(QPixmap(":/icons/anki.png"),
+                            QIcon.Normal, QIcon.Off)
         self.setIcon(anki_logo)
 
     def _setup_context_menu(self):
@@ -109,17 +108,17 @@ class TrayIconManager(QSystemTrayIcon):
         else:
             self.hide()
             if mw.state == "profileManager":
-                # if profile manager active, this event may fire via OS X menu bar's
-                # quit option
+                # If profile manager active, this event may fire via OS X
+                # menu bar's quit option
                 mw.profileDiag.close()
                 event.accept()
             else:
-                # ignore the event for now, as we need time to clean up
+                # Ignore the event for now, as we need time to clean up
                 event.ignore()
                 mw.unloadProfileAndExit()
 
     def _focus_changed(self, old, now):
-        if now is None:
+        if not now:
             mw.last_focus = old
 
     def on_activated(self, reason):
